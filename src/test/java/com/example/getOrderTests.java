@@ -20,9 +20,10 @@ public class getOrderTests {
 
     @Before
     public void setUp() {
-       userCredentials = new UserCredentials();
-       user = User.getRandomCorrectUser();
-       orderClient = new OrderClient();
+        userCredentials = new UserCredentials();
+        userClient = new UserClient();
+        user = User.getRandomCorrectUser();
+        orderClient = new OrderClient();
     }
 
     @After
