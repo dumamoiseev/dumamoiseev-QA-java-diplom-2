@@ -4,12 +4,13 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 
-public  class OrderClient extends ApiClient {
+public class OrderClient extends ApiClient {
 
     private String baseURI = "/orders";
 
@@ -41,7 +42,7 @@ public  class OrderClient extends ApiClient {
 
     @Step("Получить список заказов пользователя")
     public ValidatableResponse getOrdersOfUser(String authentication) {
-        return  given()
+        return given()
                 .headers(
                         "Authorization", "Bearer " + authentication,
                         "Content-Type",
@@ -56,16 +57,10 @@ public  class OrderClient extends ApiClient {
 
     @Step("Получить список заказов пользователя")
     public ValidatableResponse getOrdersOfUserWithOutAuth() {
-        return  given()
+        return given()
                 .spec(getBaseSpec())
                 .when()
                 .get(baseURI)
                 .then();
-    }
-
-    @Step("Проверка")
-    public void checkResponse(ValidatableResponse response, int statusCode, boolean isSuccess) {
-                assertThat(response.extract().statusCode(), equalTo(statusCode));
-                assertThat(response.extract().path("success"), equalTo(isSuccess));
     }
 }

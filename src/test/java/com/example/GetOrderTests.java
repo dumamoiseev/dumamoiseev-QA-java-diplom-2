@@ -11,7 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 @DisplayName("Тесты по регистрации пользователя")
-public class getOrderTests {
+public class GetOrderTests {
 
     private UserCredentials userCredentials;
     private UserClient userClient;
@@ -38,15 +38,18 @@ public class getOrderTests {
         userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
         ValidatableResponse response = new OrderClient().getOrdersOfUser(token);
-        orderClient.checkResponse(response, 200,true);
-        assertThat(response.extract().path("orders.total"), notNullValue());
+        assertThat(response.extract().statusCode(), equalTo(200));
+        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(true));
+        assertThat("Проерка на Null не прошла", response.extract().path("orders.total"), notNullValue());
     }
+
     @Test
     @DisplayName("Получение заказов пользователя без авторизации")
     public void getUserOrdersWithOutAuthTest() {
         ValidatableResponse response = new OrderClient().getOrdersOfUserWithOutAuth();
-        orderClient.checkResponse(response, 401,false);
-        assertThat(response.extract().path("message"),equalTo("You should be authorised"));
+        assertThat(response.extract().statusCode(), equalTo(401));
+        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(false));
+        assertThat("Проерка на текст ошибки не прошла", response.extract().path("message"), equalTo("You should be authorised"));
     }
 }
 
