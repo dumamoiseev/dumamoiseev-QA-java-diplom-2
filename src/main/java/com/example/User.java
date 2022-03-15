@@ -37,14 +37,14 @@ public class User extends ApiClient {
     }
 
     @Step("Получение  пользователя без пароля")
-    public static User getUserWithOutPassword(){
+    public static User getUserWithOutPassword() {
         final String email = RandomStringUtils.randomAlphabetic(10) + "@gmail.com";
         final String name = RandomStringUtils.randomAlphabetic(10);
         return new User(email, null, name);
     }
 
     @Step("Получение  пользователя без почты")
-    public static User getUserWithOutEmail(){
+    public static User getUserWithOutEmail() {
         final String password = RandomStringUtils.randomAlphabetic(10);
         final String name = RandomStringUtils.randomAlphabetic(10);
         return new User(null, password, name);

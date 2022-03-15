@@ -13,11 +13,9 @@ import static org.apache.commons.lang3.RandomUtils.nextInt;
 public class Ingredients extends ApiClient {
 
     public ArrayList<String> ingredients;
-
     public Ingredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
     }
-
     private static final String INGREDIENTS_PATH = "ingredients";
 
     @Step("Создать ингридиенты бургера")
@@ -54,7 +52,4 @@ public class Ingredients extends ApiClient {
         ingredients.add(someIngredient);
         return new Ingredients(ingredients);
     }
-
-
-
 }

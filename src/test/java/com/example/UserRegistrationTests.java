@@ -5,6 +5,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @DisplayName("Тесты по регистрации пользователя")
@@ -12,16 +13,16 @@ public class UserRegistrationTests {
     UserClient userClient;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         userClient = new UserClient();
     }
 
     @Test
     @DisplayName("Позивитный тест регистрации пользователя")
-    public void RegistrationUserPositiveTest(){
+    public void RegistrationUserPositiveTest() {
         User user = User.getRandomCorrectUser();
         Response response = userClient.userRegistration(user);
-                response.then()
+        response.then()
                 .assertThat()
                 .statusCode(200)
                 .and()
@@ -29,8 +30,8 @@ public class UserRegistrationTests {
     }
 
     @Test
-        @DisplayName("Негативный тест регистрации уже существующего пользователя")
-    public void RegistrationExistedUserNegativeTest(){
+    @DisplayName("Негативный тест регистрации уже существующего пользователя")
+    public void RegistrationExistedUserNegativeTest() {
         User user = User.getRandomCorrectUser();
         userClient.userRegistration(user);
         Response response = userClient.userRegistration(user);
@@ -43,10 +44,10 @@ public class UserRegistrationTests {
 
     @Test
     @DisplayName("Негативный тест регистрации пользователя без обязательного поля 'Email'")
-    public void RegistrationUserWithOutRequiredFieldEmailNegativeTest(){
-         User user =  User.getUserWithOutEmail();
+    public void RegistrationUserWithOutRequiredFieldEmailNegativeTest() {
+        User user = User.getUserWithOutEmail();
         Response response = userClient.userRegistration(user);
-                response.then()
+        response.then()
                 .assertThat()
                 .statusCode(403)
                 .and()
@@ -55,8 +56,8 @@ public class UserRegistrationTests {
 
     @Test
     @DisplayName("Негативный тест регистрации пользователя без обязательного поля 'Password'")
-    public void RegistrationUserWithOutRequiredFieldPasswordNegativeTest(){
-        User user =User.getUserWithOutPassword();
+    public void RegistrationUserWithOutRequiredFieldPasswordNegativeTest() {
+        User user = User.getUserWithOutPassword();
         Response response = userClient.userRegistration(user);
         response.then()
                 .assertThat()
@@ -67,8 +68,8 @@ public class UserRegistrationTests {
 
     @Test
     @DisplayName("Негативный тест регистрации пользователя без обязательного поля 'Name'")
-    public void RegistrationUserWithOutRequiredFieldNameNegativeTest(){
-        User user =  User.getUserWithOutName();
+    public void RegistrationUserWithOutRequiredFieldNameNegativeTest() {
+        User user = User.getUserWithOutName();
         Response response = userClient.userRegistration(user);
         response.then()
                 .assertThat()

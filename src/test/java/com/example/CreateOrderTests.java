@@ -1,13 +1,12 @@
 package com.example;
 
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Тесты по регистрации пользователя")
@@ -37,57 +36,48 @@ public class CreateOrderTests {
     public void createOrderWithAuthTest() {
         userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
-        ValidatableResponse response = new OrderClient().createOrderWithAuth(Ingredients.getRandomBurger(), token);
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(200));
-        assertThat("Создание заказа прошло неуспешно", response.extract().path("success"), equalTo(true));
-        assertThat("Проерка на Null не прошла", response.extract().path("order.number"), notNullValue());
+        Response response = OrderClient.createOrderWithAuth(Ingredients.getRandomBurger(), token);
+        response.then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("success", equalTo(true))
+                .body("order.number", notNullValue());
     }
 
     @Test
     @DisplayName("Создания заказа без авторизации")
     public void createOrderWithOutAuthTest() {
         userClient.userRegistration(user);
-        ValidatableResponse response = new OrderClient().createOrderWithOutAuth(Ingredients.getRandomBurger());
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(200));
-        assertThat("Создание заказа прошло неуспешно", response.extract().path("success"), equalTo(true));
-        assertThat("Проерка на Null не прошла", response.extract().path("order.number"), notNullValue());
+        Response response = OrderClient.createOrderWithOutAuth(Ingredients.getRandomBurger());
+        response.then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("success", equalTo(true))
+                .body("order.number", notNullValue());
     }
 
     @Test
     @DisplayName("Создания заказа без авторизации и без ингридиентов")
     public void createOrderWithOutAuthAndWithOutIngredientsTest() {
-        ValidatableResponse response = new OrderClient().createOrderWithOutAuth(Ingredients.getEmptyBurger());
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(400));
-        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(false));
-        assertThat("Проерка на текст ошибки не прошла", response.extract().path("message"), equalTo("Ingredient ids must be provided"));
+        Response response = OrderClient.createOrderWithOutAuth(Ingredients.getEmptyBurger());
+        response.then()
+                .assertThat()
+                .statusCode(400)
+                .and()
+                .body("success", equalTo(false))
+                .body("message", equalTo("Ingredient ids must be provided"));
     }
 
     @Test
     @DisplayName("Создания заказа с некорректным ингридиентом")
     public void createOrderWithIncorrectIngredientsTest() {
         userClient.userRegistration(user);
-        ValidatableResponse response = new OrderClient().createOrderWithOutAuth(Ingredients.getIncorrectBurger());
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(500));
-    }
-
-    @Test
-    @DisplayName("Получение заказов пользователя с авторизацией")
-    public void getUserOrdersWithAuthTest() {
-        userClient.userRegistration(user);
-        String token = userCredentials.getUserAccessToken(user);
-        ValidatableResponse response = new OrderClient().getOrdersOfUser(token);
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(200));
-        assertThat("Создание заказа прошло неуспешно", response.extract().path("success"), equalTo(true));
-        assertThat("Проерка на Null не прошла", response.extract().path("orders.total"), notNullValue());
-    }
-
-    @Test
-    @DisplayName("Получение заказов пользователя без авторизации")
-    public void getUserOrdersWithOutAuthTest() {
-        ValidatableResponse response = new OrderClient().getOrdersOfUserWithOutAuth();
-        assertThat("Код ответа не совпал", response.extract().statusCode(), equalTo(401));
-        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(false));
-        assertThat("Проерка на текст ошибки не прошла", response.extract().path("message"), equalTo("You should be authorised"));
+        Response response = OrderClient.createOrderWithOutAuth(Ingredients.getIncorrectBurger());
+        response.then()
+                .assertThat()
+                .statusCode(500);
     }
 }
 

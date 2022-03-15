@@ -3,6 +3,7 @@ package com.example;
 import io.qameta.allure.Step;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+
 import static io.restassured.RestAssured.given;
 
 public class UserCredentials extends ApiClient {
@@ -10,7 +11,7 @@ public class UserCredentials extends ApiClient {
     private String baseURI = "/auth/login";
 
     @Step("Получение токена обновления")
-    public String getUserAccessToken(User user){
+    public String getUserAccessToken(User user) {
         String accessToken = "";
         Response response = given()
                 .spec(getBaseSpec())
@@ -30,7 +31,7 @@ public class UserCredentials extends ApiClient {
     }
 
     @Step("Получение токена доступа")
-    public String getUserRefreshToken(User user){
+    public String getUserRefreshToken(User user) {
         String refreshToken = "";
         Response response = given()
                 .spec(getBaseSpec())

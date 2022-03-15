@@ -3,13 +3,13 @@ package com.example;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
 import static io.restassured.RestAssured.given;
 
 public class UserClient extends ApiClient {
 
-
     @Step("Регистрация курьера")
-    public Response userRegistration(User user){
+    public Response userRegistration(User user) {
         return given()
                 .spec(getBaseSpec())
                 .and()
@@ -19,8 +19,8 @@ public class UserClient extends ApiClient {
     }
 
     @Step("login курьера")
-    public Response userLogIn(User user){
-        return  given()
+    public Response userLogIn(User user) {
+        return given()
                 .spec(getBaseSpec())
                 .when()
                 .and()
@@ -29,8 +29,8 @@ public class UserClient extends ApiClient {
     }
 
     @Step("Редактирование курьера с авторизацией")
-    public Response userEdit(User user,String authentication){
-        return  given()
+    public Response userEdit(User user, String authentication) {
+        return given()
                 .headers(
                         "Authorization", "Bearer " + authentication,
                         "Content-Type",
@@ -45,8 +45,8 @@ public class UserClient extends ApiClient {
     }
 
     @Step("Редактирование курьера без авторизации")
-    public Response userEditWithOutAuth(User user){
-        return  given()
+    public Response userEditWithOutAuth(User user) {
+        return given()
                 .spec(getBaseSpec())
                 .when()
                 .and()
@@ -55,7 +55,7 @@ public class UserClient extends ApiClient {
     }
 
     @Step("LogOut курьера")
-    public void userLogOut(String token){
+    public void userLogOut(String token) {
         given()
                 .spec(getBaseSpec())
                 .when()
@@ -65,7 +65,7 @@ public class UserClient extends ApiClient {
     }
 
     @Step("Registration и Login")
-    public void userRegistrationAndLogin(User user){
+    public void userRegistrationAndLogin(User user) {
         userRegistration(user);
         userLogIn(user);
     }

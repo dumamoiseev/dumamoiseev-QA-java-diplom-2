@@ -1,13 +1,12 @@
 package com.example;
 
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 @DisplayName("Тесты по регистрации пользователя")
@@ -37,19 +36,25 @@ public class GetOrderTests {
     public void getUserOrdersWithAuthTest() {
         userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
-        ValidatableResponse response = new OrderClient().getOrdersOfUser(token);
-        assertThat(response.extract().statusCode(), equalTo(200));
-        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(true));
-        assertThat("Проерка на Null не прошла", response.extract().path("orders.total"), notNullValue());
+        Response response = OrderClient.getOrdersOfUser(token);
+        response.then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("success", equalTo(true))
+                .body("orders.total", notNullValue());
     }
 
     @Test
     @DisplayName("Получение заказов пользователя без авторизации")
     public void getUserOrdersWithOutAuthTest() {
-        ValidatableResponse response = new OrderClient().getOrdersOfUserWithOutAuth();
-        assertThat(response.extract().statusCode(), equalTo(401));
-        assertThat("Признак успешности не совпал", response.extract().path("success"), equalTo(false));
-        assertThat("Проерка на текст ошибки не прошла", response.extract().path("message"), equalTo("You should be authorised"));
+        Response response = OrderClient.getOrdersOfUserWithOutAuth();
+        response.then()
+                .assertThat()
+                .statusCode(401)
+                .and()
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
 }
 

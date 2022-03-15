@@ -43,6 +43,4 @@ public class UserLoginTests {
                 .and()
                 .body("success", equalTo(false));
     }
-
-
 }
