@@ -1,12 +1,8 @@
 package com.example;
 
 import io.qameta.allure.Step;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-import org.apache.commons.lang3.RandomStringUtils;
 
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.given;
+import org.apache.commons.lang3.RandomStringUtils;
 
 
 public class User extends ApiClient {

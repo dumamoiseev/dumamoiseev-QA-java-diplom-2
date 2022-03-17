@@ -12,20 +12,21 @@ public class UserEditionTests {
     UserClient userClient;
     UserCredentials userCredentials;
     User user;
+    User newUser;
 
     @Before
     public void setUp() {
         userClient = new UserClient();
         userCredentials = new UserCredentials();
         user = User.getRandomCorrectUser();
+        newUser = User.getRandomCorrectUser();
+        userClient.userRegistrationAndLogin(user);
     }
 
     @Test
     @DisplayName("Позивитный тест на изменение данных курьера")
     public void EditUserWithAuthorisationTest() {
-        userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
-        User newUser = User.getRandomCorrectUser();
         Response response = userClient.userEdit(newUser, token);
         response.then()
                 .assertThat()
@@ -34,14 +35,13 @@ public class UserEditionTests {
                 .body("success", equalTo(true))
                 .body("user.email", equalTo(newUser.email))
                 .body("user.name", equalTo(newUser.name));
-        userClient.userLogOut(token);
+        String accessToken = userCredentials.getUserAccessToken(newUser);
+        userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Негативный тест на изменение данных курьера без авторизации")
     public void EditUserWithOutAuthorisationTest() {
-        userClient.userRegistrationAndLogin(user);
-        User newUser = User.getRandomCorrectUser();
         Response response = userClient.userEditWithOutAuth(newUser);
         response.then()
                 .assertThat()
@@ -49,5 +49,7 @@ public class UserEditionTests {
                 .and()
                 .body("success", equalTo(false))
                 .body("message", equalTo("You should be authorised"));
+        String accessToken = userCredentials.getUserAccessToken(user);
+        userClient.delete(accessToken);
     }
 }

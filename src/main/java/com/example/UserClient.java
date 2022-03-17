@@ -69,4 +69,23 @@ public class UserClient extends ApiClient {
         userRegistration(user);
         userLogIn(user);
     }
+
+    @Step("Удаление клиента")
+    public void delete(String authentication) {
+        if (authentication == null) {
+            return;
+        }
+        given()
+                .headers(
+                        "Authorization", "Bearer " + authentication,
+                        "Content-Type",
+                        ContentType.JSON,
+                        "Accept",
+                        ContentType.JSON)
+                .spec(getBaseSpec())
+                .when()
+                .delete("auth/user")
+                .then()
+                .statusCode(202);
+    }
 }

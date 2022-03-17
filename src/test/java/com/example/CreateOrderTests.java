@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
 
@@ -23,18 +24,18 @@ public class CreateOrderTests {
         userClient = new UserClient();
         user = User.getRandomCorrectUser();
         orderClient = new OrderClient();
+        userClient.userRegistration(user);
     }
 
     @After
     public void tearDown() {
-        String refreshToken = userCredentials.getUserRefreshToken(user);
-        userClient.userLogOut(refreshToken);
+        String accessToken = userCredentials.getUserAccessToken(user);
+        userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Позитивный тест создания заказа с авторизацией")
     public void createOrderWithAuthTest() {
-        userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
         Response response = OrderClient.createOrderWithAuth(Ingredients.getRandomBurger(), token);
         response.then()
@@ -48,7 +49,6 @@ public class CreateOrderTests {
     @Test
     @DisplayName("Создания заказа без авторизации")
     public void createOrderWithOutAuthTest() {
-        userClient.userRegistration(user);
         Response response = OrderClient.createOrderWithOutAuth(Ingredients.getRandomBurger());
         response.then()
                 .assertThat()
@@ -73,7 +73,6 @@ public class CreateOrderTests {
     @Test
     @DisplayName("Создания заказа с некорректным ингридиентом")
     public void createOrderWithIncorrectIngredientsTest() {
-        userClient.userRegistration(user);
         Response response = OrderClient.createOrderWithOutAuth(Ingredients.getIncorrectBurger());
         response.then()
                 .assertThat()

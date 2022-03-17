@@ -1,6 +1,5 @@
 package com.example;
 
-
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.Before;
@@ -10,11 +9,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @DisplayName("Тесты по регистрации пользователя")
 public class UserRegistrationTests {
+
     UserClient userClient;
+    UserCredentials userCredentials;
 
     @Before
     public void setUp() {
         userClient = new UserClient();
+        userCredentials = new UserCredentials();
     }
 
     @Test
@@ -27,6 +29,8 @@ public class UserRegistrationTests {
                 .statusCode(200)
                 .and()
                 .body("success", equalTo(true));
+        String accessToken = userCredentials.getUserAccessToken(user);
+        userClient.delete(accessToken);
     }
 
     @Test

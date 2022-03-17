@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -23,18 +24,18 @@ public class GetOrderTests {
         userClient = new UserClient();
         user = User.getRandomCorrectUser();
         orderClient = new OrderClient();
+        userClient.userRegistration(user);
     }
 
     @After
     public void tearDown() {
-        String refreshToken = userCredentials.getUserRefreshToken(user);
-        userClient.userLogOut(refreshToken);
+        String accessToken = userCredentials.getUserAccessToken(user);
+        userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Получение заказов пользователя с авторизацией")
     public void getUserOrdersWithAuthTest() {
-        userClient.userRegistration(user);
         String token = userCredentials.getUserAccessToken(user);
         Response response = OrderClient.getOrdersOfUser(token);
         response.then()
