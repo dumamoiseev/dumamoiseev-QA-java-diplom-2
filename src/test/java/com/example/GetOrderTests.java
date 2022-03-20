@@ -17,6 +17,7 @@ public class GetOrderTests {
     private UserClient userClient;
     User user;
     OrderClient orderClient;
+    String accessToken;
 
     @Before
     public void setUp() {
@@ -25,11 +26,11 @@ public class GetOrderTests {
         user = User.getRandomCorrectUser();
         orderClient = new OrderClient();
         userClient.userRegistration(user);
+        accessToken = userCredentials.getUserAccessToken(user);
     }
 
     @After
     public void tearDown() {
-        String accessToken = userCredentials.getUserAccessToken(user);
         userClient.delete(accessToken);
     }
 

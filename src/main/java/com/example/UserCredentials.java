@@ -8,10 +8,10 @@ import static io.restassured.RestAssured.given;
 
 public class UserCredentials extends ApiClient {
 
-    private String baseURI = "/auth/login";
+    private static String baseURI = "/auth/login";
 
     @Step("Получение токена обновления")
-    public String getUserAccessToken(User user) {
+    public static String getUserAccessToken(User user) {
         String accessToken = "";
         Response response = given()
                 .spec(getBaseSpec())

@@ -2,6 +2,7 @@ package com.example;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ public class UserEditionTests {
     UserCredentials userCredentials;
     User user;
     User newUser;
+    String accessToken;
 
     @Before
     public void setUp() {
@@ -21,13 +23,19 @@ public class UserEditionTests {
         user = User.getRandomCorrectUser();
         newUser = User.getRandomCorrectUser();
         userClient.userRegistrationAndLogin(user);
+        accessToken = UserCredentials.getUserAccessToken(user);
+    }
+
+    @After
+    public void tearDown() {
+        userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Позивитный тест на изменение данных курьера")
     public void EditUserWithAuthorisationTest() {
-        String token = userCredentials.getUserAccessToken(user);
-        Response response = userClient.userEdit(newUser, token);
+
+        Response response = userClient.userEdit(newUser, accessToken);
         response.then()
                 .assertThat()
                 .statusCode(200)
@@ -35,8 +43,6 @@ public class UserEditionTests {
                 .body("success", equalTo(true))
                 .body("user.email", equalTo(newUser.email))
                 .body("user.name", equalTo(newUser.name));
-        String accessToken = userCredentials.getUserAccessToken(newUser);
-        userClient.delete(accessToken);
     }
 
     @Test
@@ -49,7 +55,5 @@ public class UserEditionTests {
                 .and()
                 .body("success", equalTo(false))
                 .body("message", equalTo("You should be authorised"));
-        String accessToken = userCredentials.getUserAccessToken(user);
-        userClient.delete(accessToken);
     }
 }

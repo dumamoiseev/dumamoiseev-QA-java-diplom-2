@@ -72,9 +72,6 @@ public class UserClient extends ApiClient {
 
     @Step("Удаление клиента")
     public void delete(String authentication) {
-        if (authentication == null) {
-            return;
-        }
         given()
                 .headers(
                         "Authorization", "Bearer " + authentication,

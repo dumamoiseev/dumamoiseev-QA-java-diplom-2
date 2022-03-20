@@ -17,6 +17,7 @@ public class CreateOrderTests {
     private UserClient userClient;
     User user;
     OrderClient orderClient;
+    String accessToken;
 
     @Before
     public void setUp() {
@@ -25,19 +26,18 @@ public class CreateOrderTests {
         user = User.getRandomCorrectUser();
         orderClient = new OrderClient();
         userClient.userRegistration(user);
+        accessToken = userCredentials.getUserAccessToken(user);
     }
 
     @After
     public void tearDown() {
-        String accessToken = userCredentials.getUserAccessToken(user);
         userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Позитивный тест создания заказа с авторизацией")
     public void createOrderWithAuthTest() {
-        String token = userCredentials.getUserAccessToken(user);
-        Response response = OrderClient.createOrderWithAuth(Ingredients.getRandomBurger(), token);
+        Response response = OrderClient.createOrderWithAuth(Ingredients.getRandomBurger(), accessToken);
         response.then()
                 .assertThat()
                 .statusCode(200)

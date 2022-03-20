@@ -14,6 +14,7 @@ public class UserLoginTests {
     User user;
     User fakeUser;
     UserCredentials userCredentials;
+    String accessToken;
 
     @Before
     public void setUp() {
@@ -21,18 +22,17 @@ public class UserLoginTests {
         userCredentials = new UserCredentials();
         user = User.getRandomCorrectUser();
         userClient.userRegistration(user);
+        accessToken = userCredentials.getUserAccessToken(user);
     }
 
     @After
     public void tearDown() {
-        String accessToken = userCredentials.getUserAccessToken(user);
         userClient.delete(accessToken);
     }
 
     @Test
     @DisplayName("Позивитный тест логина курьера")
     public void LoginUserPositiveTest() {
-
         Response response = userClient.userLogIn(user);
         response.then()
                 .assertThat()
